@@ -3,7 +3,7 @@ import os
 import requests
 
 
-def redirector(event, context):
+def lambda_handler(event, context):
 
     print(event)
 
