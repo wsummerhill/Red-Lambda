@@ -15,7 +15,9 @@ Infrastructure includes:
 The lambda function python code is embedded in the cloudformation template.
 However, I've copied it in the `lambda.py` file to review. 
 
-:warning: **Changes required of January 2024:** <br />
+<span style="color:blue">*Personally, I just manually create the Lambda function myself in AWS console using the code from `lambda.py` as its pretty quick to do.*</span>
+
+### :warning: **Changes required of January 2024:** :warning: <br />
 The AWS Lambda function can now be run with new versions of Python such as 3.11 or 3.12 with small modifications. Changes to the code and process have been detailed to allow the support of the Python `requests` library in newer versions of Lambda and Python since Python 3.7 is no longer supported and the new versions [don't provide support by AWS](https://aws.amazon.com/blogs/compute/upcoming-changes-to-the-python-sdk-in-aws-lambda/) for the Python `requests` library naturally, so we have to add it ourselves. Steps detailed in [below section](#lambda-redirector-changes-required).
 
 ### Tested C2 Frameworks
@@ -69,7 +71,7 @@ aws ssm start-session --target <instance id> --document-name AWS-StartPortForwar
 ```
 *Note: This is helpful if your C2 has a web management interface or teamserver port that must to accessed locally.*
 
-## Lambda Redirector Changes Required
+## :star: Lambda Redirector Changes Required :star:
 
 **AWS Lambda no longer supports Python 3.7, and newer versions of Lambda don’t support the `requests` library in Python.**<br />
 Follow these steps to fix this issue:
