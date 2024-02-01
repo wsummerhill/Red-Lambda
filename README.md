@@ -80,7 +80,7 @@ Follow these steps to fix this issue:
 2. Modify your code function to use the updated code in `lambda.py` from this repo to support the `requests` library in the newer version of Python
 3. Change Lambda runtime environment to Python 3.11 (or whatever version your `requests` library is using).
 4. Now you're good to go! Test it out to confirm it works.
-    - You can use `curl` to hit your endpoint and view logs on the C2 server to ensure the request are coming throuhg without errors.
+    - You can use `curl` to hit your endpoint and view logs on the C2 server to ensure the request are coming through without errors.
 
 ## Final Topology
 ![AWS Topology](/red-lambda-aws-topo.png)
