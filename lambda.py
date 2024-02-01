@@ -1,7 +1,7 @@
 import base64
 import os
 import requests
-
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 def lambda_handler(event, context):
 
@@ -34,9 +34,9 @@ def lambda_handler(event, context):
         else:
             body = event["body"]
 
-    # Forward request to C2
-    requests.packages.urllib3.disable_warnings() 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     
+    # Forward request to C2
     if event["requestContext"]["http"]["method"] == "GET":
         resp = requests.get(url, headers=inboundHeaders, params=queryStrings, verify=False)
     elif event["requestContext"]["http"]["method"] == "POST":
