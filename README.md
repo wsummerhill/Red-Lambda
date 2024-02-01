@@ -15,7 +15,8 @@ Infrastructure includes:
 The lambda function python code is embedded in the cloudformation template.
 However, I've copied it in the `lambda.py` file to review. 
 
-:warning: The AWS Lambda Function must be ran using the Python3.7 runtime. The redirector will not work on versions later than 3.7 due to an issue with [AWS supporting](https://aws.amazon.com/blogs/compute/upcoming-changes-to-the-python-sdk-in-aws-lambda/) the python `requests` library. 
+:warning: **Changes required of January 2024:** <br />
+The AWS Lambda function can now be run with new versions of Python such as 3.11 or 3.12 with small modifications. Changes to the code and process have been detailed to allow the support of the Python `requests` library in newer versions of Lambda and Python since Python 3.7 is no longer supported and the new versions [don't provide support by AWS](https://aws.amazon.com/blogs/compute/upcoming-changes-to-the-python-sdk-in-aws-lambda/) for the Python `requests` library naturally, so we have to add it ourselves. Steps detailed in [below section](#lambda-redirector-changes-required).
 
 ### Tested C2 Frameworks
 Frameworks tested while developing this tool include:
@@ -67,6 +68,19 @@ Use SSM to port forward to your local machine:
 aws ssm start-session --target <instance id> --document-name AWS-StartPortForwardingSession --parameters "portNumber"=["80"],"localPortNumber"=["1234"]
 ```
 *Note: This is helpful if your C2 has a web management interface or teamserver port that must to accessed locally.*
+
+## Lambda Redirector Changes Required
+
+**AWS Lambda no longer supports Python 3.7, and newer versions of Lambda don’t support the `requests` library in Python.**<br />
+Follow these steps to fix this issue:
+1. Create an AWS Lambda Layer (One time setup only): The Lambda Layer will allow us to import the Python `requests` library code ourselves which our redirector function will be using.
+    - Use [this post](https://www.keyq.cloud/en/blog/creating-an-aws-lambda-layer-for-python-requests-module) to create a zip file of the Python `requests` library which we'll upload as a Lambda Layer in AWS.
+        - *Note: Be sure to match your Python version used to create the `requests` library with the Python environment selected for your Lambda function*
+    - Once you have your `requests` zip package from the above step, in AWS go to **Lambda → Layers → Create Layer → Upload the requests.zip package - Select Python 3.11** (or whatever Python version you’re using) **→ Create**
+2. Modify your code function to use the updated code in `lambda.py` from this repo to support the `requests` library in the newer version of Python
+3. Change Lambda runtime environment to Python 3.11 (or whatever version your `requests` library is using).
+4. Now you're good to go! Test it out to confirm it works.
+    - You can use `curl` to hit your endpoint and view logs on the C2 server to ensure the request are coming throuhg without errors.
 
 ## Final Topology
 ![AWS Topology](/red-lambda-aws-topo.png)
